@@ -1,10 +1,10 @@
 require('dotenv').config();
 const { ethers } = require('ethers');
-const { strategies } = require('./strategies');
+const { strategies, provider } = require('./strategies');
 
 const intervalPeriod = 3600000; // 1 hour
 const callCost = BigInt(10000000000000000);
-const signer = new ethers.Wallet(process.env.PRIVATE_KEY);
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 async function harvestTrigger(strategy, callCostInWei) {
 	return await strategy.harvestTrigger(callCostInWei);
@@ -12,7 +12,7 @@ async function harvestTrigger(strategy, callCostInWei) {
 
 async function harvest(strategy) {
 	const transaction = await strategy.connect(signer).harvest();
-	console.log(`Tx Hash: ${transaction.hash}\n`);
+	console.log(`Tx Hash: ${transaction.hash}`);
 	console.log(`Waiting for the transaction to be mined...`);
 	await transaction.wait();
 	console.log(`Transaction confirmed!\n`);
@@ -23,10 +23,9 @@ async function main() {
 	for (const [contract, name] of strategies.entries()) {
 		console.log(`Checking: ${name}`);
 		const shouldHarvest = await harvestTrigger(contract, callCost);
-		console.log(shouldHarvest);
 		if (shouldHarvest) {
 			console.log(`Trying to harvest...`);
-			harvest(contract);
+			await harvest(contract);
 		} else {
 			console.log(`Strategy doesn't need harvesting\n`);
 		}

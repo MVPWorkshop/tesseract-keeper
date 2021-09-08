@@ -51,13 +51,14 @@ const leveragedAaveWeth = new ethers.Contract(
 
 // Export strategies
 const strategies = new Map([
-	[leveragedAaveUsdc, 'Leveraged AAVE - USDC Strategy'],
-	[leveragedAaveDai, 'Leveraged AAVE - DAI Strategy'],
-	[leveragedAaveUsdt, 'Leveraged AAVE - USDT Strategy'],
+	// [leveragedAaveUsdc, 'Leveraged AAVE - USDC Strategy'],
+	// [leveragedAaveDai, 'Leveraged AAVE - DAI Strategy'],
+	// [leveragedAaveUsdt, 'Leveraged AAVE - USDT Strategy'],
 	[leveragedAaveWbtc, 'Leveraged AAVE - WBTC Strategy'],
 	[leveragedAaveWeth, 'Leveraged AAVE - WETH Strategy'],
 ]);
 
 module.exports = {
 	strategies: strategies,
+	provider: provider,
 };
