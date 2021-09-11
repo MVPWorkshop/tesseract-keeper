@@ -1,9 +1,11 @@
 require('dotenv').config();
 const { ethers } = require('ethers');
 const { strategies, provider } = require('./strategies');
+const Sentry = require('@sentry/node');
 
-const intervalPeriod = 3600000; // 1 hour
-const callCost = BigInt(10000000000000000);
+const intervalPeriod = 28800000; // 8 hours
+const callCost = BigInt(10000000000000000); // in wei
+
 const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 async function harvestTrigger(strategy, callCostInWei) {
@@ -32,15 +34,26 @@ async function main() {
 	}
 }
 
+Sentry.init({
+	dsn: process.env.SENTRY_DSN,
+	tracesSampleRate: 1.0,
+});
+
 console.log('Keeper bot script is up & running\n');
 
 setInterval(() => {
+	const sentryTransaction = Sentry.startTransaction({
+		op: 'harvest',
+		name: 'Catch Harvest failed transactions',
+	});
+
 	main()
 		.then(() =>
 			console.log(`Harvest check done, next in ${intervalPeriod} miliseconds\n`)
 		)
 		.catch((error) => {
-			console.error(error);
-			process.exit(1);
-		});
+			Sentry.captureException(error);
+			console.error('Error occured, check Sentry for details');
+		})
+		.finally(() => sentryTransaction.finish());
 }, intervalPeriod);

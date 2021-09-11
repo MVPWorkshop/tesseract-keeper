@@ -5,11 +5,7 @@ const provider = new ethers.providers.JsonRpcProvider(
 );
 
 // ABIs
-const leveragedAaveUsdcAbi = require('./abis/LeveragedAaveUsdc.abi.json');
-const leveragedAaveDaiAbi = require('./abis/LeveragedAaveDai.abi.json');
-const leveragedAaveUsdtAbi = require('./abis/LeveragedAaveUsdt.abi.json');
-const leveragedAaveWbtcAbi = require('./abis/LeveragedAaveWbtc.abi.json');
-const leveragedAaveWethAbi = require('./abis/LeveragedAaveWbtc.abi.json');
+const leveragedAaveAbi = require('./abis/LeveragedAave.abi.json');
 
 // Addresses on Polygon Main Net
 const leveragedAaveUsdcAddress = '0x4e88B4f358406b5cd36622771Fd427d719f6f5fC';
@@ -21,39 +17,39 @@ const leveragedAaveWethAddress = '0xcf26db4f3bB6b75E2E7222676931E815D465195C';
 // Contract instances
 const leveragedAaveUsdc = new ethers.Contract(
 	leveragedAaveUsdcAddress,
-	leveragedAaveUsdcAbi,
+	leveragedAaveAbi,
 	provider
 );
 
 const leveragedAaveDai = new ethers.Contract(
 	leveragedAaveDaiAddress,
-	leveragedAaveDaiAbi,
+	leveragedAaveAbi,
 	provider
 );
 
 const leveragedAaveUsdt = new ethers.Contract(
 	leveragedAaveUsdtAddress,
-	leveragedAaveUsdtAbi,
+	leveragedAaveAbi,
 	provider
 );
 
 const leveragedAaveWbtc = new ethers.Contract(
 	leveragedAaveWbtcAddress,
-	leveragedAaveWbtcAbi,
+	leveragedAaveAbi,
 	provider
 );
 
 const leveragedAaveWeth = new ethers.Contract(
 	leveragedAaveWethAddress,
-	leveragedAaveWethAbi,
+	leveragedAaveAbi,
 	provider
 );
 
 // Export strategies
 const strategies = new Map([
-	// [leveragedAaveUsdc, 'Leveraged AAVE - USDC Strategy'],
-	// [leveragedAaveDai, 'Leveraged AAVE - DAI Strategy'],
-	// [leveragedAaveUsdt, 'Leveraged AAVE - USDT Strategy'],
+	[leveragedAaveUsdc, 'Leveraged AAVE - USDC Strategy'],
+	[leveragedAaveDai, 'Leveraged AAVE - DAI Strategy'],
+	[leveragedAaveUsdt, 'Leveraged AAVE - USDT Strategy'],
 	[leveragedAaveWbtc, 'Leveraged AAVE - WBTC Strategy'],
 	[leveragedAaveWeth, 'Leveraged AAVE - WETH Strategy'],
 ]);
