@@ -20,23 +20,36 @@ async function harvest(strategy) {
 }
 
 async function main() {
+	const sentryTransaction = Sentry.startTransaction({
+		op: 'harvest',
+		name: 'Catch Harvest failed transactions',
+	});
+
 	console.log(`Check for harvest started...\n`);
+
 	for (const [contract, name] of strategies.entries()) {
 		console.log(`Checking: ${name}`);
 		const shouldHarvest = await harvestTrigger(contract, callCost);
 		if (shouldHarvest) {
 			console.log(`Trying to harvest...`);
-			await harvest(contract);
+			try {
+				await harvest(contract);
+			} catch (error) {
+				Sentry.captureException(error);
+				console.error('Error occured, check Sentry for details');
+			}
 		} else {
 			console.log(`Strategy doesn't need harvesting\n`);
 		}
 	}
+
+	sentryTransaction.finish();
 }
 
 function exec() {
 	const sentryTransaction = Sentry.startTransaction({
-		op: 'harvest',
-		name: 'Catch Harvest failed transactions',
+		op: 'general',
+		name: 'Catch general errors',
 	});
 
 	main()
@@ -57,7 +70,7 @@ Sentry.init({
 	tracesSampleRate: 1.0,
 });
 
-console.log('Keeper bot script is up & running\n');
+console.log('🚀 Keeper bot script is up & running\n');
 
 exec();
 
