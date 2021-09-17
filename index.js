@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { ethers } = require('ethers');
+const { ethers, BigNumber } = require('ethers');
 const { strategies, provider } = require('./strategies');
 const Sentry = require('@sentry/node');
 
@@ -11,8 +11,33 @@ async function harvestTrigger(strategy, callCostInWei) {
 	return await strategy.harvestTrigger(callCostInWei);
 }
 
-async function harvest(strategy) {
-	const transaction = await strategy.connect(signer).harvest();
+async function harvest(contract) {
+	const strategy = await contract.connect(signer);
+
+	const sentryTransaction = Sentry.startTransaction({
+		op: 'pre-harvest',
+		name: 'Catch if Harvest would fail',
+	});
+
+	try {
+		await strategy.callStatic.harvest();
+	} catch (error) {
+		Sentry.captureException(error);
+		console.error('Error occured, check Sentry for details');
+		return;
+	}
+
+	// estimate the gas of transaction
+	const estimatedGas = await strategy.estimateGas.harvest();
+
+	// mutliple that value with 1.3
+	const gasLimit = estimatedGas.add(
+		estimatedGas.mul(BigNumber.from(3)).div(BigNumber.from(10))
+	);
+
+	sentryTransaction.finish();
+
+	const transaction = await strategy.harvest({ gasLimit: gasLimit });
 	console.log(`Tx Hash: ${transaction.hash}`);
 	console.log(`Waiting for the transaction to be mined...`);
 	await transaction.wait();
