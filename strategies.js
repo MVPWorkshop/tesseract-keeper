@@ -9,9 +9,9 @@ const strategyGenLevAaveAbi = require('./abis/StrategyGenLevAave.abi.json');
 
 // Addresses on Polygon Main Net
 const strategyGenLevAaveUsdcAddress = `0x5Eab952D5a81067EBb9F1E2348382E34805b7e53`;
-const strategyGenLevAaveDaiAddress = `0xC1fa844991963Babd2f6f4AFAa021553E5762E49`;
-const strategyGenLevAaveWbtcAddress = `0xBA95038Bca1175a56Ef5f887A60627B7caf55b9c`;
-const strategyGenLevAaveWethAddress = `0x2Bea1Ead72bD0B9609Ae0fAbeb79CcCe636FFB4c`;
+const strategyGenLevAaveDaiAddress = `0x901f316658Fb49F54de72eE2621C1789074D37E9`;
+const strategyGenLevAaveWbtcAddress = `0xE6951cef4968F03D42A6c30683F102A5cEb59B82`;
+const strategyGenLevAaveWethAddress = `0x623a24146F65d7Bf68e47b355d92FE84190F30C0`;
 
 // Contract instances
 const leveragedAaveUsdc = new ethers.Contract(
