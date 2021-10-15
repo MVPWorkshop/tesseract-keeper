@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { ethers, BigNumber } = require('ethers');
 const { strategies, provider } = require('./strategies');
+const { getGasPrice } = require('./gas');
 const Sentry = require('@sentry/node');
 
 const callCost = BigInt(10000000000000000); // in wei
@@ -34,14 +35,15 @@ async function harvest(contract) {
 	const gasLimit = estimatedGas.add(
 		estimatedGas.mul(BigNumber.from(3)).div(BigNumber.from(10))
 	);
+	const gasPrice = await getGasPrice();
 
 	sentryTransaction.finish();
-
-	const transaction = await strategy.harvest({ gasLimit: gasLimit });
-	console.log(`Tx Hash: ${transaction.hash}`);
-	console.log(`Waiting for the transaction to be mined...`);
-	await transaction.wait();
-	console.log(`Transaction confirmed!\n`);
+console.log(gasPrice);
+	// const transaction = await strategy.harvest({ gasLimit: gasLimit, gasPrice: gasPrice });
+	// console.log(`Tx Hash: ${transaction.hash}`);
+	// console.log(`Waiting for the transaction to be mined...`);
+	// await transaction.wait();
+	// console.log(`Transaction confirmed!\n`);
 }
 
 async function main() {
