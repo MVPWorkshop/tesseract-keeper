@@ -7,6 +7,9 @@ const callCost = BigInt(10000000000000000); // in wei
 
 const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
+const defaultGasPriceGwei = BigNumber.from(parseInt(process.env.GAS_PRICE || "50"))
+const gasPrice = defaultGasPriceGwei.mul(BigNumber.from(1000000000))
+
 async function harvestTrigger(strategy, callCostInWei) {
 	return await strategy.harvestTrigger(callCostInWei);
 }
@@ -28,16 +31,16 @@ async function harvest(contract) {
 	}
 
 	// estimate the gas of transaction
-	const estimatedGas = await strategy.estimateGas.harvest();
+	const estimatedGasLimit = await strategy.estimateGas.harvest();
 
 	// mutliple that value with 1.3
-	const gasLimit = estimatedGas.add(
-		estimatedGas.mul(BigNumber.from(3)).div(BigNumber.from(10))
+	const gasLimit = estimatedGasLimit.add(
+		estimatedGasLimit.mul(BigNumber.from(3)).div(BigNumber.from(10))
 	);
 
 	sentryTransaction.finish();
 
-	const transaction = await strategy.harvest({ gasLimit: gasLimit });
+	const transaction = await strategy.harvest({ gasLimit, gasPrice });
 	console.log(`Tx Hash: ${transaction.hash}`);
 	console.log(`Waiting for the transaction to be mined...`);
 	await transaction.wait();
