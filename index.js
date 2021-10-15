@@ -38,12 +38,12 @@ async function harvest(contract) {
 	const gasPrice = await getGasPrice();
 
 	sentryTransaction.finish();
-console.log(gasPrice);
-	// const transaction = await strategy.harvest({ gasLimit: gasLimit, gasPrice: gasPrice });
-	// console.log(`Tx Hash: ${transaction.hash}`);
-	// console.log(`Waiting for the transaction to be mined...`);
-	// await transaction.wait();
-	// console.log(`Transaction confirmed!\n`);
+
+	const transaction = await strategy.harvest({ gasLimit: gasLimit, gasPrice: gasPrice });
+	console.log(`Tx Hash: ${transaction.hash}`);
+	console.log(`Waiting for the transaction to be mined...`);
+	await transaction.wait();
+	console.log(`Transaction confirmed!\n`);
 }
 
 async function main() {
