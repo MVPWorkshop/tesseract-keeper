@@ -5,8 +5,8 @@ const { getGasPrice } = require('./gas');
 const Sentry = require('@sentry/node');
 const { METHODS_TO_EXECUTE } = require('./constants');
 
-const callCost = BigInt(10000000000000000); // in wei
-
+// Call cost in wei, zero for now while it's subsidized by Tesseract.fi
+const callCost = BigInt(0);
 const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 async function harvestTrigger(strategy, callCostInWei) {
