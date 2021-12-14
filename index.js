@@ -89,7 +89,7 @@ async function main(method) {
 
 	console.log('Check for ' + method + ' started...\n');
 
-	for (const [contract, name] of strategies.entries()) {
+	for (const [name, contract] of strategies.entries()) {
 		console.log(`Checking: ${name}`);
 		let shouldExecute = false;
 
